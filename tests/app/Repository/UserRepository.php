@@ -62,10 +62,9 @@ class UserRepository extends BaseRepository
 
         if ($request['role'] == env('CUSTOMER_ROLE_ID')) {
 
-            if($request['consumer_type'] == 'paid')
+            if($request['consumer_type'] == 'paid' && $request['company_id'] == '')
             {
-                if($request['company_id'] == '')
-                {
+
                     $type = Type::where('code', 'paid')->first();
                     $company = Company::create(['name' => $request['name'], 'type_id' => $type->id, 'additional_info' => 'Created automatically for user ' . $model->id]);
                     $department = Department::create(['name' => $request['name'], 'company_id' => $company->id, 'additional_info' => 'Created automatically for user ' . $model->id]);
@@ -73,7 +72,6 @@ class UserRepository extends BaseRepository
                     $model->company_id = $company->id;
                     $model->department_id = $department->id;
                     $model->save();
-                }
             }
 
             $user_meta = UserMeta::firstOrCreate(['user_id' => $model->id]);
